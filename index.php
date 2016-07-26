@@ -1,20 +1,23 @@
 ﻿<!doctype html>
-<html lang="sv">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Magic Mirror</title>
 	<meta name="description" content="The Magic Mirror">
-	<meta http-equiv="refresh" content="1800" /> <!-- Updates the whole page every 30 minutes (each 1800 second) -->
+	<meta http-equiv="refresh" content="600" /> <!-- Updates the whole page every 10 minutes (every 600 seconds) -->
 	<link rel="stylesheet" href="style.css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
 		<script language="JavaScript"> <!-- Getting the current date and time and updates them every second -->
-			setInterval(function() { 
+			setInterval(function() {
 				var currentTime = new Date ( );
-				var currentHours = currentTime.getHours ( );   
+				var currentHours = currentTime.getHours ( );
+				if (currentHours > 12) {
+					currentHours=currentHours-12; //CONVERTING FROM MILITARY TIME
+				}
 				var currentMinutes = currentTime.getMinutes ( );
 				var currentMinutesleadingzero = currentMinutes > 9 ? currentMinutes : '0' + currentMinutes; // If the number is 9 or below we add a 0 before the number.
 				var currentDate = currentTime.getDate ( );
-	
+
 					var weekday = new Array(7);
 					weekday[0] = "Sunday";
 					weekday[1] = "Monday";
@@ -23,8 +26,8 @@
 					weekday[4] = "Thursday";
 					weekday[5] = "Friday";
 					weekday[6] = "Saturday";
-				var currentDay = weekday[currentTime.getDay()]; 
-	
+				var currentDay = weekday[currentTime.getDay()];
+
 					var actualmonth = new Array(12);
 					actualmonth[0] = "January";
 					actualmonth[1] = "February";
@@ -40,7 +43,7 @@
 					actualmonth[11] = "December";
 				var currentMonth = actualmonth[currentTime.getMonth ()];
 
-    var currentTimeString = "<h1>" + currentHours + ":" + currentMinutesleadingzero + "</h1><h2>" + currentDay + " " + currentDate + " " + currentMonth + "</h2>";
+    var currentTimeString = "<h1>" + currentHours + ":" + currentMinutesleadingzero + "</h1><h2>" + currentDay + " " + currentMonth + " " + currentDate + "</h2>";
     document.getElementById("clock").innerHTML = currentTimeString;
 }, 1000);
 	</script>
@@ -50,33 +53,27 @@
 	<div id="upper-left">
 		<div id="clock"></div> <!-- Including the date/time-script -->
 	</div>
+	<!---->
 	<div id="upper-right">
 		<h2>...</h2>
 		<?php // Code for getting the RSS-news-feed
-			$rss = new DOMDocument();
-			$rss->load('http://feeds.idg.se/idg/vzzs'); // Specify the address to the feed
-			$feed = array();
-				foreach ($rss->getElementsByTagName('item') as $node) {
-					$item = array (
-					'title' => $node->getElementsByTagName('title')->item(0)->nodeValue,
-					'desc' => $node->getElementsByTagName('description')->item(0)->nodeValue,
-					'date' => $node->getElementsByTagName('pubDate')->item(0)->nodeValue,
-					);
-				array_push($feed, $item);
-				}
-   
-		$limit = 3; // Number of posts to be displayed
-			for($x=0;$x<$limit;$x++) {
-				$title = str_replace(' & ', ' &amp; ', $feed[$x]['title']);
-				$description = $feed[$x]['desc'];
-				$date = date('j F', strtotime($feed[$x]['date']));
-				echo '<h2 class="smaller">'.$title.'</h2>';
-				echo '<p class="date">'.$date.'</p>';
-				echo '<p>'.strip_tags($description, '<p><b>').'</p><h2>...</h2>';
+
+
+		echo '<h1>Reminders:</h1>'
+		echo '<h1> </h1>'
+
+		for ($i=0; $i < 7; $i++) {
+			if (currentDay==weekday[i]) {
+				$fname = 'tasks/' + weekday[i] + '.txt';
+				$dayData = readfile(fname);
+				echo '<h2 class="smaller">'.dayData.'</h2>';
 			}
+		}
+
+
 		?>
-		<p>idg.se</p>
 	</div>
+	<!---->
 	<div id="bottom">
 		<h3>
 		<?php // Depending on the hour of the day a different message is displayed.
