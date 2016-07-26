@@ -56,19 +56,8 @@
 	<!---->
 	<div id="upper-right">
 		<h2>...</h2>
-		<?php // Code for getting the RSS-news-feed
+		<?php
 
-
-		echo '<h1>Reminders:</h1>'
-		echo '<h1> </h1>'
-
-		for ($i=0; $i < 7; $i++) {
-			if (currentDay==weekday[i]) {
-				$fname = 'tasks/' + weekday[i] + '.txt';
-				$dayData = readfile(fname);
-				echo '<h2 class="smaller">'.dayData.'</h2>';
-			}
-		}
 
 
 		?>
